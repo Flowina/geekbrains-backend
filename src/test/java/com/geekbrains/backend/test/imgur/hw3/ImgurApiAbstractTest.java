@@ -9,7 +9,7 @@ import io.restassured.specification.RequestSpecification;
 
 import java.util.Properties;
 
-public class ImgurApiAbstractTest extends ImgurApiBase {
+public abstract class ImgurApiAbstractTest extends ImgurApiBase {
 
     protected static RequestSpecification requestSpecification;
     protected static String TOKEN;

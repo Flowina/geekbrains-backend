@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.matchesPattern;
+import static org.hamcrest.Matchers.*;
 
 public class ImgurTests extends ImgurApiAbstractTest {
 
@@ -18,13 +17,10 @@ public class ImgurTests extends ImgurApiAbstractTest {
     @Order(1)
     void getImageCount() {
         IMAGES_COUNT = given()
-                //.auth()
-                //.oauth2(TOKEN)
                 .spec(requestSpecification)
                 .log()
                 .all()
                 .expect()
-                //.body("data", is(3))
                 .body("success", is(true))
                 .log()
                 .all()
@@ -80,18 +76,18 @@ public class ImgurTests extends ImgurApiAbstractTest {
         String albumDescription = "Description";
 
         JsonPath al = given()
-                .spec(requestSpecification) // общие параметры запроса
-                .formParam("title", albumTitle) // добавляет в тело запроса параметрв по ключу и значению
+                .spec(requestSpecification)
+                .formParam("title", albumTitle)
                 .formParam("description", albumDescription)
                 .log()
                 .all()
                 .expect()
-                .body("data.id", matchesPattern("(?i)^[a-z0-9]{7}$"))   //проверки от респонса
+                .body("data.id", matchesPattern("(?i)^[a-z0-9]{7}$"))
                 .body("data.deletehash", matchesPattern("(?i)^[a-z0-9]{15}$"))
                 .log()
                 .all()
                 .when()
-                .post("album")  // отправка запроса. адрес после base url
+                .post("album")
                 .body()
                 .jsonPath();
         ALBUM_HASH = al.getString("data.id");
@@ -116,9 +112,8 @@ public class ImgurTests extends ImgurApiAbstractTest {
     @Test
     @Order(6)
     void deleteAlbumTest() {
-
         given()
-                .spec(requestSpecification) // общие параметры запроса
+                .spec(requestSpecification)
                 .log()
                 .all()
                 .expect()
@@ -128,6 +123,24 @@ public class ImgurTests extends ImgurApiAbstractTest {
                 .all()
                 .when()
                 .delete("album/" + ALBUM_HASH);
+        IMAGES_COUNT--;
+
+    }
+
+    @Test
+    @Order(7)
+    void getAccountImageCount() {
+        given()
+                .spec(requestSpecification)
+                .log()
+                .all()
+                .expect()
+                .body("success", is(true))
+                .body("data", hasSize(IMAGES_COUNT))
+                .log()
+                .all()
+                .when()
+                .get("account/" + USER_NAME + "/images");
 
     }
 
