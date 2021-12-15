@@ -95,30 +95,40 @@ public class ImgurTests extends ImgurApiAbstractTest {
                 .body()
                 .jsonPath();
         ALBUM_HASH = al.getString("data.id");
-
     }
-    @Test
-    @Order(6)
-    void deleteAlbumTest() {
-        String albumTitle = "Album";
-        String albumDescription = "Description";
 
-        JsonPath al = given()
-                .spec(requestSpecification) // общие параметры запроса
-                .formParam("title", albumTitle) // добавляет в тело запроса параметрв по ключу и значению
-                .formParam("description", albumDescription)
+    @Test
+    @Order(5)
+    void addImageToAlbumTest() {
+        given()
+                .spec(requestSpecification)
+                .multiPart("ids[]", IMAGE_HASH)
                 .log()
                 .all()
                 .expect()
-                .body("data.id", matchesPattern("(?i)^[a-z0-9]{7}$"))   //проверки от респонса
-                .body("data.deletehash", matchesPattern("(?i)^[a-z0-9]{15}$"))
+                .body("status", is(200))
                 .log()
                 .all()
                 .when()
-                .post("album")  // отправка запроса. адрес после base url
-                .body()
-                .jsonPath();
-        ALBUM_HASH = al.getString("data.id");
+                .post("album/" + ALBUM_HASH + "/add");
+    }
+
+    @Test
+    @Order(6)
+    void deleteAlbumTest() {
+
+        given()
+                .spec(requestSpecification) // общие параметры запроса
+                .log()
+                .all()
+                .expect()
+                .body("status", is(200))
+                .body("data", is(true))
+                .log()
+                .all()
+                .when()
+                .delete("album/" + ALBUM_HASH);
 
     }
+
 }
