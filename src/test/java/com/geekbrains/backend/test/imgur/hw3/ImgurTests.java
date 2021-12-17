@@ -13,6 +13,7 @@ public class ImgurTests extends ImgurApiAbstractTest {
     private static String IMAGE_HASH;
     private static String ALBUM_HASH;
 
+
     @Test
     @Order(1)
     void getImageCount() {
@@ -21,6 +22,7 @@ public class ImgurTests extends ImgurApiAbstractTest {
                 .log()
                 .all()
                 .expect()
+                .spec(goodResponseSpecification())
                 .body("success", is(true))
                 .log()
                 .all()
@@ -62,7 +64,7 @@ public class ImgurTests extends ImgurApiAbstractTest {
                 .log()
                 .all()
                 .expect()
-                .body("status", is(200))
+                .spec(goodResponseSpecification())
                 .log()
                 .all()
                 .when()
@@ -82,6 +84,7 @@ public class ImgurTests extends ImgurApiAbstractTest {
                 .log()
                 .all()
                 .expect()
+                .spec(goodResponseSpecification())
                 .body("data.id", matchesPattern("(?i)^[a-z0-9]{7}$"))
                 .body("data.deletehash", matchesPattern("(?i)^[a-z0-9]{15}$"))
                 .log()
@@ -102,7 +105,7 @@ public class ImgurTests extends ImgurApiAbstractTest {
                 .log()
                 .all()
                 .expect()
-                .body("status", is(200))
+                .spec(goodResponseSpecification())
                 .log()
                 .all()
                 .when()
@@ -117,7 +120,7 @@ public class ImgurTests extends ImgurApiAbstractTest {
                 .log()
                 .all()
                 .expect()
-                .body("status", is(200))
+                .spec(goodResponseSpecification())
                 .body("data", is(true))
                 .log()
                 .all()
@@ -141,6 +144,24 @@ public class ImgurTests extends ImgurApiAbstractTest {
                 .all()
                 .when()
                 .get("account/" + USER_NAME + "/images");
+
+    }
+
+    @Test
+    @Order(8)
+    void albumNotExistTest() {
+
+        given()
+                .spec(requestSpecification)
+                .log()
+                .all()
+                .expect()
+                .spec(goodResponseSpecification())
+                .body("data", is(not(contains(ALBUM_HASH))))
+                .log()
+                .all()
+                .when()
+                .get("account/" + USER_NAME + "/albums/ids/0");
 
     }
 
