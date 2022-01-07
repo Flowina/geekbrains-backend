@@ -8,6 +8,7 @@ import java.io.IOException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import io.qameta.allure.Description;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class MiniMarketApiTests {
@@ -22,6 +23,7 @@ public class MiniMarketApiTests {
 
     @Test
     @Order(1)
+    @Description("Create Product")
     void createProduct() throws IOException {
         Product product = new Product();
         product.setTitle("tomato");
@@ -40,6 +42,7 @@ public class MiniMarketApiTests {
 
     @Test
     @Order(2)
+    @Description("Get Products")
     void getProducts() throws IOException {
         ProductsResponse resp = ms.getProducts();
         assertThat(resp.ok(), is(true));
@@ -48,6 +51,7 @@ public class MiniMarketApiTests {
 
     @Test
     @Order(3)
+    @Description("Update Product")
     void updateProducts() throws IOException {
         Product product = new Product();
         product.setTitle("potato");
@@ -65,6 +69,7 @@ public class MiniMarketApiTests {
 
     @Test
     @Order(4)
+    @Description("Get Product by Id")
     void getProductByID() throws IOException {
         ProductResponse resp = ms.getProduct(lastStateProduct.getId());
 
@@ -77,6 +82,7 @@ public class MiniMarketApiTests {
 
     @Test
     @Order(5)
+    @Description("Delete Product")
     void deleteProductByID() throws IOException {
         DeleteResponse resp = ms.deleteProduct(lastStateProduct.getId());
         assertThat(resp.ok(), is(true));
@@ -85,6 +91,7 @@ public class MiniMarketApiTests {
     }
 
     @Test
+    @Description("Get Category")
     void getCategory() throws IOException {
         Long categoryId = 1L;
         CategoryResponse resp = ms.getCategory(categoryId);
